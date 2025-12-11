@@ -60,11 +60,7 @@ window.addEventListener('scroll', () => {
 const serviceSelect = document.getElementById('serviceSelect');
 const calculateSection = document.getElementById('calculateSection');
 const durationInfo = document.getElementById('durationInfo');
-const addonCheckboxes = document.querySelectorAll('input[name="addons"]');
-const calculateBtn = document.getElementById('calculateBtn');
 const baseAmount = document.getElementById('baseAmount');
-const durationAmount = document.getElementById('durationAmount');
-const addonsAmount = document.getElementById('addonsAmount');
 const totalAmount = document.getElementById('totalAmount');
 
 // Service duration mapping
@@ -137,8 +133,7 @@ serviceSelect.addEventListener('change', function() {
         const estimatedDuration = serviceDurations[this.value] || 'To be confirmed';
         document.getElementById('estimatedDuration').textContent = estimatedDuration;
         
-        // Reset and calculate initial amount
-        resetCalculation();
+        // Calculate amount
         calculateAmount();
     } else {
         calculateSection.style.display = 'none';
@@ -146,41 +141,13 @@ serviceSelect.addEventListener('change', function() {
     }
 });
 
-// Calculate amount when any input changes
-addonCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', calculateAmount);
-});
-
-// Calculate button (optional - for manual calculation)
-calculateBtn.addEventListener('click', calculateAmount);
-
 function calculateAmount() {
     const selectedService = serviceSelect.options[serviceSelect.selectedIndex];
     const basePrice = parseInt(selectedService.getAttribute('data-price')) || 0;
     
-    // Calculate add-ons cost only
-    let addonsCost = 0;
-    addonCheckboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-            addonsCost += parseInt(checkbox.getAttribute('data-price')) || 0;
-        }
-    });
-    
-    // Calculate total (base price + add-ons only)
-    const total = basePrice + addonsCost;
-    
-    // Update display
+    // Update display (base price = total since no add-ons)
     baseAmount.textContent = `R${basePrice}`;
-    durationAmount.textContent = `R0`;
-    addonsAmount.textContent = `R${addonsCost}`;
-    totalAmount.textContent = `R${total}`;
-}
-
-function resetCalculation() {
-    addonCheckboxes.forEach(checkbox => {
-        checkbox.checked = false;
-    });
-    calculateAmount();
+    totalAmount.textContent = `R${basePrice}`;
 }
 
 // Update WhatsApp message to include calculated amount
@@ -194,14 +161,6 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
     const date = formData.get('date');
     const message = formData.get('message');
     
-    // Get selected add-ons
-    const selectedAddons = [];
-    addonCheckboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-            selectedAddons.push(checkbox.parentElement.querySelector('span').textContent);
-        }
-    });
-    
     const total = totalAmount.textContent;
     
     // Format the message for WhatsApp
@@ -212,8 +171,7 @@ Name: ${name}
 Phone: ${phone}
 Service: ${service}
 Date: ${date}
-${selectedAddons.length > 0 ? `Add-ons: ${selectedAddons.join(', ')}\n` : ''}
-Estimated Total: ${total}
+Service Price: ${total}
 Message: ${message || 'No additional notes'}
 
 Please confirm this appointment and final pricing.`.trim();
@@ -318,10 +276,12 @@ Please confirm this appointment and final pricing.`.trim();
     });
 });
 
-// Map functionality
+// Map functionality - Updated with properly encoded Plus Code address
 document.getElementById('mapTrigger').addEventListener('click', () => {
-    //Google Maps location
-    const mapURL = 'https://www.google.com/maps/search/?api=1&query=Beauty+Salon+New+York';
+    // Google Maps location with Plus Code - properly encoded
+    const address = 'H94G+GC4 Magatle Limpopo South Africa';
+    const encodedAddress = encodeURIComponent(address);
+    const mapURL = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
     window.open(mapURL, '_blank');
 });
 
