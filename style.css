@@ -606,17 +606,46 @@ header.scrolled .open {
     background: rgba(255, 255, 255, 0.15);
 }
 
-/* Improved Select Styling - Fixed for all devices */
+/* IMPROVED SELECT STYLING - Consistent across all devices */
 .form-group select {
-    appearance: none;
+    /* Remove default styling */
     -webkit-appearance: none;
     -moz-appearance: none;
+    appearance: none;
+    
+    /* Custom styling */
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-white);
+    border: 1px solid #555;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    width: 100%;
+    
+    /* Custom arrow */
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 16px center;
     background-size: 16px;
     padding-right: 50px !important;
-    cursor: pointer;
+}
+
+/* For iOS devices - Force dark theme */
+@media not all and (min-resolution:.001dpcm) { 
+    @supports (-webkit-appearance:none) {
+        .form-group select {
+            color: var(--text-white) !important;
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            -webkit-text-fill-color: var(--text-white) !important;
+        }
+        
+        .form-group select option {
+            background: #2C2C2C !important;
+            color: var(--text-white) !important;
+        }
+    }
 }
 
 /* For Firefox */
@@ -628,11 +657,13 @@ header.scrolled .open {
     }
 }
 
+/* Select dropdown options styling */
 .form-group select optgroup {
     background: #3C3C3C;
     color: var(--accent-color);
     font-weight: 600;
     font-family: 'Roboto', sans-serif;
+    padding: 10px;
 }
 
 .form-group select option {
@@ -640,10 +671,14 @@ header.scrolled .open {
     color: white;
     padding: 12px;
     border-bottom: 1px solid #444;
+    font-size: 0.95rem;
 }
 
-.form-group select option:hover {
-    background: var(--primary-color);
+.form-group select option:hover,
+.form-group select option:focus,
+.form-group select option:checked {
+    background: var(--primary-color) !important;
+    color: white !important;
 }
 
 .submit-btn {
@@ -957,6 +992,60 @@ header.scrolled .open {
     color: var(--accent-color);
 }
 
+/* ==================== MOBILE SPECIFIC FIXES ==================== */
+
+/* Mobile-specific select styling fixes */
+@media (max-width: 767px) {
+    .form-group select {
+        /* Ensure consistent styling on mobile */
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: var(--text-white) !important;
+        border: 1px solid #555 !important;
+        border-radius: 10px !important;
+        padding: 14px 16px !important;
+        font-size: 16px !important; /* Prevent iOS zoom */
+        height: 48px; /* Consistent touch target */
+        
+        /* Reset any iOS-specific styling */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        
+        /* Custom arrow that works on mobile */
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 16px center !important;
+        background-size: 16px !important;
+        padding-right: 50px !important;
+    }
+    
+    /* iOS Safari specific fixes */
+    @supports (-webkit-touch-callout: none) {
+        .form-group select {
+            -webkit-text-fill-color: var(--text-white) !important;
+            opacity: 1 !important;
+        }
+        
+        .form-group select:focus {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+        }
+    }
+    
+    /* For dropdown options on mobile */
+    .form-group select option {
+        background: #2C2C2C !important;
+        color: white !important;
+        padding: 12px !important;
+        font-size: 16px !important;
+    }
+    
+    .form-group select optgroup {
+        background: #3C3C3C !important;
+        color: var(--accent-color) !important;
+        font-size: 16px !important;
+    }
+}
+
 /* Specific fixes for 410px screens */
 @media (max-width: 410px) {
     /* Prevent horizontal scrolling and ensure content fits */
@@ -1081,28 +1170,10 @@ header.scrolled .open {
     
     .form-group select {
         padding-right: 40px !important;
-        background-position: right 12px center;
-        background-size: 14px;
-        /* Remove iOS specific styling that causes double arrows */
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
+        background-position: right 12px center !important;
+        background-size: 14px !important;
+        height: 48px;
     }
-    
-    /* Remove the problematic iOS specific fix */
-    /*
-    #serviceSelect {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 1px solid #555;
-        color: white;
-        appearance: menulist;
-        -webkit-appearance: menulist;
-    }
-    
-    #serviceSelect:focus {
-        background-color: rgba(255, 255, 255, 0.15);
-    }
-    */
     
     /* House Picture Section */
     .house-picture-section {
@@ -1148,6 +1219,7 @@ header.scrolled .open {
         padding: 14px 20px;
         font-size: 1rem;
         box-sizing: border-box;
+        height: 48px;
     }
     
     /* Service Select Dropdown Fix */
@@ -1334,18 +1406,6 @@ header.scrolled .open {
     }
 }
 
-/* Tablet Styles for Addons */
-@media (min-width: 768px) {
-    /* House Picture Section for Tablet */
-    .house-image-frame {
-        height: 200px;
-    }
-    
-    .social-links {
-        justify-content: flex-start;
-    }
-}
-
 /* Tablet Styles */
 @media (min-width: 768px) {
     .container {
@@ -1400,6 +1460,10 @@ header.scrolled .open {
     
     .house-image-frame {
         height: 220px;
+    }
+    
+    .social-links {
+        justify-content: flex-start;
     }
 }
 
